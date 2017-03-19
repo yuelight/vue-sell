@@ -15,6 +15,11 @@
                 <div class="pay" :class="payClass">{{payDesc}}</div>
             </div>
         </div>
+        <div class="ball-container">
+            <div class="ball" transition="drop" v-for="ball in balls" v-show="ball.show">
+                <div class="inner inner-hook"></div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -32,12 +37,25 @@ export default {
         selectFoods: {
             type: Array,
             default() {
-                return [{
-                    price: 10,
-                    count: 2
-                }];
+                return [];
             }
         }
+    },
+    data() {
+        return {
+            balls: [{
+                show: false
+            }, {
+                show: false
+            }, {
+                show: false
+            }, {
+                show: false
+            }, {
+                show: false
+            }],
+            dropBalls: []
+        };
     },
     computed: {
         totalPrice() {
@@ -71,6 +89,58 @@ export default {
                 return 'not-enough';
             } else {
                 return 'enough';
+            }
+        }
+    },
+    methods: {
+        drop(el) {
+            for (let ball of this.balls) {
+                if (!ball.show) {
+                    ball.show = true;
+                    ball.el = el;
+                    this.dropBalls.push(ball);
+                    return;
+                }
+            }
+        }
+    },
+    transitions: {
+        drop: {
+            beforeEnter(el) {
+                let count = this.balls.length;
+                while (count--) {
+                    let ball = this.balls[count];
+                    if (ball.show) {
+                        let rect = ball.el.getBoundingClientRect();
+                        let x = rect.left - 32;
+                        let y = -(window.innerHeight - rect.top - 22);
+                        el.style.display = '';
+                        el.style.webkitTransform = `translate3d(0,${y}px,0)`;
+                        el.style.transform = `translate3d(0,${y}px,0)`;
+                        let inner = el.getElementsByClassName('inner-hook')[0];
+                        inner.style.webkitTransform = `translate3d(${x}px,0,0)`;
+                        inner.style.transform = `translate3d(${x}px,0,0)`;
+                    }
+                }
+            },
+            enter(el) {
+                /* eslint-disable no-unused-vars */
+                let rf = el.offsetHeight;
+
+                this.$nextTick(() => {
+                    el.style.webkitTransform = 'translate3d(0,0,0)';
+                    el.style.transform = 'translate3d(0,0,0)';
+                    let inner = el.getElementsByClassName('inner-hook')[0];
+                    inner.style.webkitTransform = 'translate3d(0,0,0)';
+                    inner.style.transform = 'translate3d(0,0,0)';
+                });
+            },
+            afterEnter(el) {
+                let ball = this.dropBalls.shift();
+                if (ball) {
+                    ball.show = false;
+                    el.style.display = 'none';
+                }
             }
         }
     }
@@ -165,4 +235,18 @@ export default {
                     &.enough
                         background: #00b43c;
                         color: #fff;
+        .ball-container
+            .ball
+                position: fixed;
+                left: 32px;
+                bottom: 32px;
+                z-index: 200;
+                &.drop-transition
+                    transition: all .4s cubic-bezier(.49,-.29,.75,.41);
+                    .inner
+                        width: 16px;
+                        height: 16px;
+                        border-radius: 50%;
+                        background: rgb(0,160,220);
+                        transition: all .4s linear;
 </style>
