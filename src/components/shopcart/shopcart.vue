@@ -6,13 +6,13 @@
                     <div class="logo" :class="{'highlight': totalCount > 0}">
                         <i class="icon-shopping_cart"></i>
                     </div>
-                    <div class="num" v-show="totalCount > 0">{{totalCount}}</div>
+                    <div class="num" v-show="totalCount > 0">{{ totalCount }}</div>
                 </div>
-                <div class="price" :class="{'highlight': totalPrice > 0}">￥{{totalPrice}}</div>
-                <div class="desc">另需配送费￥{{deliveryPrice}}元</div>
+                <div class="price" :class="{'highlight': totalPrice > 0}">￥{{ totalPrice }}</div>
+                <div class="desc">另需配送费￥{{ deliveryPrice }}元</div>
             </div>
             <div class="content-right" @click.stop.prevent="pay">
-                <div class="pay" :class="payClass">{{payDesc}}</div>
+                <div class="pay" :class="payClass">{{ payDesc }}</div>
             </div>
         </div>
         <div class="ball-container">
@@ -28,9 +28,9 @@
             <div class="list-content" v-el:list-content>
                 <ul>
                     <li class="food border-1px" v-for="food in selectFoods">
-                        <span class="name">{{food.name}}</span>
+                        <span class="name">{{ food.name }}</span>
                         <div class="price">
-                            <span>￥{{food.price * food.count}}</span>
+                            <span>￥{{ food.price * food.count }}</span>
                         </div>
                         <div class="cartcontrol-wrapper">
                             <cartcontrol :food="food"></cartcontrol>
